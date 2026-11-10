@@ -566,7 +566,13 @@ function requestCard(r) {
   const emp = roleIs("employee"), ev = roleIs("evaluator");
   return `<div class="req ${r.status}"><div class="reqh">${pill(r.type, "orange")} <b>${esc(r.from)} → ${esc(r.to)}</b> <code>${r.at}</code> ${r.status === "answered" ? badge("답변 옴", "teal") : r.status === "resolved" ? badge("요청 해결 · " + (r.result || "수용"), "green") : badge("요청 중", "orange")}</div>
     <div class="reqb"><div><span class="lbl">현재 내용 (전)</span>${esc(r.before)}</div><div><span class="lbl">바라는 내용 (후)</span>${esc(r.after)}</div><div><span class="lbl">사유</span>${esc(r.reason)}</div>${r.link ? `<div><span class="lbl">근거 링크</span>${esc(r.link)}</div>` : ""}${r.answer ? `<div class="ans"><span class="lbl">대상자 설명</span>${esc(r.answer)}${r.answerLink ? ` · <a href="${esc(r.answerLink)}" target="_blank" rel="noopener">${esc(r.answerLink)}</a>` : ""}${r.answerFile ? ` · 첨부 ${esc(r.answerFile)}` : ""}</div>` : ""}</div>
-    <div class="reqa">${emp && r.status === "requested" ? `<form data-act="answer" data-id="${r.id}" class="ansform"><input name="answer" placeholder="설명 (왜 그런지)" required><input name="link" placeholder="근거 링크 (선택) — 리포트 · 쿼리 · 티켓"><label class="filebtn"><input type="file" name="files" multiple data-act="pickfile"><span>📎 파일 첨부</span></label><span class="filelist dimtxt" id="files-${r.id}">${(STORE._pick && STORE._pick[r.id] || []).map(f => esc(f)).join(" · ") || "첨부 없음"}</span><button class="btn primary">설명 · 자료 보내기</button></form>` : ""}
+    <div class="reqa">${emp && r.status === "requested" ? `<form data-act="answer" data-id="${r.id}" class="ansform">
+      <div class="ansh">설명 · 자료 보내기</div>
+      <div class="ansf wide"><label>설명 <small>왜 그런지 · 필수</small></label><textarea name="answer" rows="2" placeholder="예: 후 숫자는 9/19 집계 쿼리로 다시 쟀습니다. 전 숫자와 같은 샘플 50건 기준입니다." required></textarea></div>
+      <div class="ansf"><label>근거 링크 <small>선택</small></label><input name="link" placeholder="리포트 · 쿼리 · 티켓 주소"></div>
+      <div class="ansf"><label>파일 첨부 <small>선택 · 여러 개 가능</small></label><div class="ansfile"><label class="filebtn"><input type="file" name="files" multiple data-act="pickfile"><span>📎 파일 고르기</span></label><span class="filelist dimtxt">첨부 없음</span></div></div>
+      <div class="ansa"><button class="btn primary">설명 · 자료 보내기</button></div>
+    </form>` : ""}
     ${ev && r.status !== "resolved" ? `<span class="inline"><select data-result="${r.id}">${RESOLVE_TYPES.map(t => `<option>${t}</option>`).join("")}</select><button class="btn" data-act="resolve" data-id="${r.id}">처리 결과 기록 · 요청 해결</button></span>` : ""}</div></div>`;
 }
 
