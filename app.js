@@ -48,7 +48,9 @@ try { STORE = Object.assign({}, DEFAULT_STORE, JSON.parse(localStorage.getItem("
 /* 기본 요청이 새로 추가되면 저장된 목록에 합친다 */
 SEED_REQUESTS.forEach(r => { if (!STORE.requests.some(x => x.id === r.id)) STORE.requests.push({ ...r }); });
 STORE.requests.forEach(r => { if (r.entry === "__wb_script_result") r.entry = WB_SCRIPT_RESULT_ID; });
-const save = () => { try { localStorage.setItem("ilro.v4", JSON.stringify(STORE)); } catch (e) {} };
+/* 로그인 상태는 탭 안에서만 유지 — 사이트에 새로 들어오면 항상 로그인 화면부터 */
+const save = () => { try { const { loggedIn, ...rest } = STORE; localStorage.setItem("ilro.v4", JSON.stringify(rest)); sessionStorage.setItem("ilro.login", loggedIn ? "1" : ""); } catch (e) {} };
+try { STORE.loggedIn = sessionStorage.getItem("ilro.login") === "1"; } catch (e) { STORE.loggedIn = false; }
 const now = () => { const d = new Date(); const p = n => String(n).padStart(2,"0"); return `${d.getFullYear()}.${p(d.getMonth()+1)}.${p(d.getDate())} ${p(d.getHours())}:${p(d.getMinutes())}`; };
 const log = (type, text, pid) => { STORE.history.unshift({ at: now(), type, text, pid }); save(); };
 
